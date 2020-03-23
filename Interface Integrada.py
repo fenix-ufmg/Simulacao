@@ -32,79 +32,79 @@ corpo_densidade = 0
 #transferência dos dados da lista "armazenamento" para declaração de variáveis
 for i in armazenamento:
 	if i == 'c0':
-		coifa_tipo = armazenamento[i+1]    
+		coifa_tipo = float(armazenamento[armazenamento.index(i)+1] )    
 	elif i == 'c1':
-		coifa_diametro = armazenamento[i+1]
+		coifa_diametro = float(armazenamento[armazenamento.index(i)+1] )
 	elif i == 'c2':
-		coifa_comprimento = armazenamento[i+1]  
+		coifa_comprimento = float(armazenamento[armazenamento.index(i)+1] ) 
 	elif i == 'c3':
-		coifa_espessura = armazenamento[i+1]  
+		coifa_espessura = float(armazenamento[armazenamento.index(i)+1] )
 	elif i == 'c4':
-		coifa_densidade = armazenamento[i+1]  
+		coifa_densidade = float(armazenamento[armazenamento.index(i)+1] ) 
 	elif i == 'cp1':
 		if corpo_diametro == 0:
-			corpo_diametro = armazenamento[i+1]
+			corpo_diametro = float(armazenamento[armazenamento.index(i)+1] ) 
 		else:
-			corpo2_diametro = armazenamento[i+1] 
+			corpo2_diametro = float(armazenamento[armazenamento.index(i)+1] )  
 	elif i == 'cp2':
 		if corpo_comprimento == 0:
-			corpo_comprimento = armazenamento[i+1] 
+			corpo_comprimento = float(armazenamento[armazenamento.index(i)+1] )  
 		else:
-			corpo2_comprimento = armazenamento[i+1] 
+			corpo2_comprimento = float(armazenamento[armazenamento.index(i)+1] )  
 	elif i == 'cp3':
 		if corpo_espessura == 0:
-			corpo_espessura = armazenamento[i+1] 
+			corpo_espessura = float(armazenamento[armazenamento.index(i)+1] )  
 		else:
-			corpo2_espessura = armazenamento[i+1]
+			corpo2_espessura = float(armazenamento[armazenamento.index(i)+1] ) 
 	elif i == 'cp4':
 		if corpo_densidade == 0:
-			corpo_densidade = armazenamento[i+1] 
+			corpo_densidade = float(armazenamento[armazenamento.index(i)+1] )  
 		else:
-			corpo2_densidade = armazenamento[i+1]
+			corpo2_densidade = float(armazenamento[armazenamento.index(i)+1] ) 
 	elif i == 'm1':
-		componente_de_massa_massa = armazenamento[i+1]  
+		componente_de_massa_massa = float(armazenamento[armazenamento.index(i)+1] )   
 	elif i == 'm2':
-		componente_de_massa_distancia = armazenamento[i+1]  
+		componente_de_massa_distancia = float(armazenamento[armazenamento.index(i)+1] )   
 	elif i == 'p1':
-		paraquedas_massa = armazenamento[i+1]  
+		paraquedas_massa = float(armazenamento[armazenamento.index(i)+1] )   
 	elif i == 'p2':
-		paraquedas_CD = armazenamento[i+1]  
+		paraquedas_CD = float(armazenamento[armazenamento.index(i)+1] )   
 	elif i == 'mt1':
-		motor_empuxo = armazenamento[i+1]          
+		motor_empuxo = float(armazenamento[armazenamento.index(i)+1] )           
 	elif i == 'mt2':
-		motor_massa = armazenamento[i+1]
+		motor_massa = float(armazenamento[armazenamento.index(i)+1] ) 
 	elif i == 'mt3':
-		motor_duracao = armazenamento[i+1]   
+		motor_duracao = float(armazenamento[armazenamento.index(i)+1] )    
 	elif i == 'mt4':
-		motor_comprimento = armazenamento[i+1]   
+		motor_comprimento = float(armazenamento[armazenamento.index(i)+1] )    
 	elif i == 'g1':
-		guia_CD = armazenamento[i+1]    
+		guia_CD = float(armazenamento[armazenamento.index(i)+1] )     
 	elif i == 't1':
-		transicao_diametro_inicial = armazenamento[i+1]    
+		transicao_diametro_inicial = float(armazenamento[armazenamento.index(i)+1] )     
 	elif i == 't2':
-		transicao_comprimento = armazenamento[i+1]    
+		transicao_comprimento = float(armazenamento[armazenamento.index(i)+1] )     
 	elif i == 't3':
-		transicao_diametro_final = armazenamento[i+1]    
+		transicao_diametro_final = float(armazenamento[armazenamento.index(i)+1] )     
 	elif i == 't4':
-		transicao_espessura = armazenamento[i+1] 
+		transicao_espessura = float(armazenamento[armazenamento.index(i)+1] )  
 	elif i == 't5':
-		transicao_densidade = armazenamento[i+1] 
+		transicao_densidade = float(armazenamento[armazenamento.index(i)+1] )  
 	elif i == 'a1':
-		aleta_comprimento_raiz = armazenamento[i+1] 
+		aleta_comprimento_raiz = float(armazenamento[armazenamento.index(i)+1] )  
 	elif i == 'a2':
-		aleta_comprimento_ponta = armazenamento[i+1] 
+		aleta_comprimento_ponta = float(armazenamento[armazenamento.index(i)+1] )  
 	elif i == 'a3':
-		aleta_desvio = armazenamento[i+1] 
+		aleta_desvio = float(armazenamento[armazenamento.index(i)+1] )  
 	elif i == 'a4':
-		aleta_largura = armazenamento[i+1] 
+		aleta_largura = float(armazenamento[armazenamento.index(i)+1] )  
 	elif i == 'a5':
-		aleta_espessura = armazenamento[i+1] 
+		aleta_espessura = float(armazenamento[armazenamento.index(i)+1] )  
 	elif i == 'a6':
-		aleta_quantidade = armazenamento[i+1] 
+		aleta_quantidade = float(armazenamento[armazenamento.index(i)+1] )  
 	elif i == 'a7':
-		aleta_distancia_do_fundo = armazenamento[i+1] 
+		aleta_distancia_do_fundo = float(armazenamento[armazenamento.index(i)+1] )  
 	elif i == 'a8':
-		aleta_densidade = armazenamento[i+1] 
+		aleta_densidade = float(armazenamento[armazenamento.index(i)+1] )  
 
 #variáveis auxiliares de passagem de tempo
 
