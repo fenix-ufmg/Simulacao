@@ -8,7 +8,7 @@ from math import log1p
 from math import fabs
 
 #calcula módulo entre dois vetores
-def callmod (vetorx,vetory):
+def call_mod (vetorx,vetory):
 	mod = (vetorx**2 + vetory**2)**0.5
 	return mod
 
@@ -62,7 +62,7 @@ def callCm (alpha,coifadiametro,A,d,foguetecomprimento,foguetevolume):
 #COEFICIENTES DE ARRASTO
 
 #coeficiente de arrasto de amortecimento
-def callCDdamping (CPaleta, CG, aletaarea,arearef,coifadiametro,comprimento,raiomedio,velocidadeangular,velocidade):
+def callCD_damping (CPaleta, CG, aletaarea,arearef,coifadiametro,comprimento,raiomedio,velocidadeangular,velocidade):
 	try:
 		CDdamping = ((0.55*(comprimento**4)*raiomedio*(velocidadeangular*fabs(velocidadeangular)))/(arearef*(coifadiametro/2)*(velocidade**2)+((0.6*4*aletaarea*(CPaleta - CG)**3*velocidadeangular**2)/(arearef*coifadiametro*velocidade))))
 	except:
