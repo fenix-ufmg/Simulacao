@@ -4,7 +4,7 @@
 from math import pi,sin,cos
 import numpy as np
 import matplotlib.pyplot as plt
-import Funcoes as f
+import funcoes as f
 
 '''
 Integração dos valores digitados na interface ao programa
