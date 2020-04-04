@@ -1,15 +1,11 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-from math import pi
-from math import acos
-from math import sin
-from math import log1p
-from math import fabs
+from math import pi, acos, sin, log1p, fabs, sqrt
 
 #calcula módulo entre dois vetores
 def call_mod (vetorx,vetory):
-	mod = (vetorx**2 + vetory**2)**0.5
+	mod = sqrt(vetorx**2 + vetory**2)
 	return mod
 
 #COEFICIENTE DE GRAVIDADE
@@ -86,7 +82,7 @@ def callCDfriction (arearef,aletaareamolhada,Rcri,fitnessratio,corpoareamolhada,
 
 #calcula coeficiente de arrasto de pressão da coifa
 def callCDcoifa (coifadiametro,coifacomprimento):
-	CDcoifa = 0.8*(coifadiametro/2)/(coifacomprimento**2 + (coifadiametro/2)**2)**0.5
+	CDcoifa = 0.8*(coifadiametro/2)/sqrt(coifacomprimento**2 + (coifadiametro/2)**2)
 	return CDcoifa
 
 #calcula coeficiente de arrasto de base da tubeira
@@ -130,7 +126,7 @@ def callCP (CPcoifa,CNalphacoifa,CPcorpo,CNalphacorpo,CPaleta,CNalphaaleta,aleta
 
 def callalpha (vetor10,vetor11,vetor20,vetor21):
 	try:
-		alpha = (acos(((vetor10*vetor20 + vetor11*vetor21))/(((vetor10**2 + vetor11**2)**0.5)*(vetor20**2 + vetor21**2)**0.5)))
+		alpha = (acos(((vetor10*vetor20 + vetor11*vetor21))/((sqrt(vetor10**2 + vetor11**2))*sqrt(vetor20**2 + vetor21**2))))
 	except:
 		alpha = 0
 	return alpha
