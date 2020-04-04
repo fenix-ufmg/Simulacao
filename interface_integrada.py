@@ -13,13 +13,13 @@ Funcional para configuraçãoes com até dois corpos e apenas um de cada um dos 
 '''
 
 #abertura de arquivo e passagem de dados para lista "armazenamento"
-arquivo = open("desenho.txt","r")
 armazenamento = []
 
-for i in arquivo.readlines():
-    armazenamento.append(i[:-1])
+with open("desenho.txt","r") as arquivo:
+    for i in arquivo.readlines():
+        armazenamento.append(i[:-1])
 
-arquivo.close
+arquivo.close()
 
 #método de identificar se os valores de corpo se referem ao primeiro ou segundo corpo do foguete
 corpo_diametro = 0
