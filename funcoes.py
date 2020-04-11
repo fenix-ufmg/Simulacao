@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-from math import pi, acos, sin, log1p, fabs, sqrt
+from math import pi, acos, sin, log, fabs, sqrt
 
 # calcula módulo entre dois vetores
 def call_mod(vetorx, vetory):
@@ -180,7 +180,7 @@ def callCDfriction(
     if reynoldsnumero < 10 ** 4:
         Cf = 1.48 * 10 ** -2
     elif 10 ** 4 <= reynoldsnumero <= Rcri:
-        Cf = 1 / (1.5 * log1p(reynoldsnumero) - 5.6) ** 2
+        Cf = 1 / (1.5 * log(reynoldsnumero) - 5.6) ** 2
     else:
         Cf = 0.032 * (Rs / foguetecomprimento) ** 0.2
 
@@ -202,8 +202,8 @@ def callCDfriction(
 def callCDcoifa(coifadiametro, coifacomprimento):
     CDcoifa = (
         0.8
-        * (coifadiametro / 2)
-        / sqrt(coifacomprimento ** 2 + (coifadiametro / 2) ** 2)
+        * ((coifadiametro / 2)
+        / sqrt(coifacomprimento ** 2 + (coifadiametro / 2) ** 2))**2
     )
     return CDcoifa
 
@@ -305,4 +305,4 @@ def callRey(ardensidade, coifadiametro, viscosidadear, velocidademodulo):
 
 
 def callwind(altura):
-    return 30 * (4 / 1.225) ** 0.5 * (2.5) * log1p(1 / 2) * (altura) ** 0.25
+    return 30 * (4 / 1.225) ** 0.5 * (2.5) * log(1 / 2) * (altura) ** 0.25
