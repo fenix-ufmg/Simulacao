@@ -353,18 +353,21 @@ CG_aleta = (
     )
 )
 
-CG = (
-    CG_coifa * coifa_massa
-    + CG_corpo * corpo_massa
-    + CG_transicao * transicao_massa
-    + CG_corpo2_motor * (corpo2_massa + motor_massa)
-    + CG_aleta * aleta_massa * aleta_quantidade
-) / (
-    coifa_massa
-    + corpo_massa
-    + transicao_massa
-    + (corpo2_massa + motor_massa)
-    + aleta_massa * aleta_quantidade
+CG = f.callCG(
+    CG_coifa,
+    CG_corpo,
+    CG_corpo2_motor,
+    CG_transicao,
+    CG_aleta,
+    coifa_massa,
+    corpo_massa,
+    corpo2_massa,
+    motor_massa,
+    aleta_massa,
+    aleta_quantidade,
+    componente_de_massa_massa,
+    componente_de_massa_distancia,
+    transicao_massa
 )
 
 # padronização que se manterá em todo o código: ângulos positivos no sentido horário
