@@ -86,32 +86,37 @@ def callCGtransicao(
 
 def callCG(
     CGcoifa,
+    CG_corpo,
     CGcorpomotor,
+    CGtransicao,
     CGaleta,
     coifamassa,
-    corpomassa,
+    corpo1massa,
+    corpo2massa,
     motormassa,
     aletamassa,
     aletanumero,
     componentemassa,
     componentedistancia,
+    transicaomassa
 ):
-    CG = [
-        0,
-        (
+    CG = (
             CGcoifa * coifamassa
+            + CGtransicao*transicaomassa
             + CGcorpomotor * (corpomassa + motormassa)
             + CGaleta * aletamassa * aletanumero
             + componentemassa * componentedistancia
         )
         / (
             coifamassa
-            + corpomassa
+            + corpo1massa
+            + corpo2massa
+            + transicaomassa
             + motormassa
             + aletamassa * aletanumero
             + componentemassa
-        ),
-    ]
+        )
+        
     return CG
 
 
