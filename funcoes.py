@@ -39,8 +39,6 @@ def callCGaleta(
     aletacomprimentoraiz,
     aletacomprimentoponta,
     aletadistanciadofundo,
-    coifacomprimento,
-    corpocomprimento,
 ):
 
     CGumaaleta = (
