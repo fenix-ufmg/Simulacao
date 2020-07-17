@@ -348,8 +348,6 @@ CG_aleta = (
         aleta_comprimento_raiz,
         aleta_comprimento_ponta,
         aleta_distancia_do_fundo,
-        coifa_comprimento,
-        corpo_comprimento,
     )
 )
 
@@ -1471,14 +1469,21 @@ plt.legend()
 
 plt.show()
 
-aceleracao = open("aceleracao.txt", "w")
-aceleracao.write(f"{aceleracaoy}")
-aceleracao.close()
-
 altura = open("altura.txt", "w")
 altura.write(f"{posicaoy}")
 altura.close()
 
+deslocamento = open("deslocamento.txt", "w")
+deslocamento.write(f"{posicaox}")
+deslocamento.close()
+
+atitudeh = open("atitudex.txt", "w")
+atitudeh.write(f"{atitudex}")
+atitudeh.close()
+
+atitudev = open("atitudey.txt", "w")
+atitudev.write(f"{atitudey}")
+atitudev.close()
 
 print(lancamentoduracao, "s")
 print(lancamentoduracao + voo_impulsionadoduracao, "s")

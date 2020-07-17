@@ -83,11 +83,11 @@ def callCGtransicao(
 
 
 def callCG(
-    CGcoifa,
+    CG_coifa,
     CG_corpo,
-    CGcorpomotor,
-    CGtransicao,
-    CGaleta,
+    CG_corpomotor,
+    CG_transicao,
+    CG_aleta,
     coifamassa,
     corpo1massa,
     corpo2massa,
@@ -99,13 +99,13 @@ def callCG(
     transicaomassa
 ):
     CG = (
-            CGcoifa * coifamassa
-            + CGtransicao*transicaomassa
-            + CGcorpomotor * (corpomassa + motormassa)
-            + CGaleta * aletamassa * aletanumero
+            CG_coifa * coifamassa
+            + CG_corpo*corpo1massa
+            + CG_transicao*transicaomassa
+            + CG_corpomotor * (corpo2massa + motormassa)
+            + CG_aleta * aletamassa * aletanumero
             + componentemassa * componentedistancia
-        )
-        / (
+        )/(
             coifamassa
             + corpo1massa
             + corpo2massa
@@ -116,7 +116,6 @@ def callCG(
         )
         
     return CG
-
 
 # COEFICIENTE DE MOMENTO
 
