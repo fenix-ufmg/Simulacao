@@ -19,8 +19,6 @@ with open("desenho.txt", "r") as arquivo:
     for i in arquivo.readlines():
         armazenamento.append(i[:-1])
 
-arquivo.close()
-
 # método de identificar se os valores de corpo se referem ao primeiro ou segundo corpo do foguete
 corpo_diametro = 0
 corpo_comprimento = 0
