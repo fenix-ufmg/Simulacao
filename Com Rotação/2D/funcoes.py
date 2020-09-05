@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from math import pi, acos, sin, log, fabs, sqrt
+import numpy as np
 
 # calcula módulo entre dois vetores
 def call_mod(vetorx, vetory):
@@ -104,7 +105,7 @@ def callCG(
             + CG_transicao*transicaomassa
             + CG_corpomotor * (corpo2massa + motormassa)
             + CG_aleta * aletamassa * aletanumero
-            + componentemassa * componentedistancia
+            + componentedistancia * componentemassa
         )/(
             coifamassa
             + corpo1massa
@@ -120,17 +121,31 @@ def callCG(
 # COEFICIENTE DE MOMENTO
 
 
-def callCm(alpha, coifadiametro, A, d, foguetecomprimento, foguetevolume):
-    try:
-        Cm = (
-            -2
-            * sin(alpha)
-            / (A)
-            * d
-            * (foguetecomprimento * (pi * coifadiametro ** 2 / 4) - foguetevolume)
-        )
-    except:
-        Cm = 0
+def callCm(alpha, coifadiametro, A, d, foguetecomprimento, foguetevolume,velocidade_relativa,atitude):
+    if np.cross(velocidade_relativa, atitude) >= 0:
+        try:
+            Cm = (
+                -2
+                * sin(alpha)
+                * (foguetecomprimento * (pi * coifadiametro ** 2 / 4) - foguetevolume)
+                / (A
+                   * d
+                   * alpha)
+                )
+        except:
+                Cm = 0
+    else:
+        try:
+            Cm = (
+                2
+                * sin(alpha)
+                * (foguetecomprimento * (pi * coifadiametro ** 2 / 4) - foguetevolume)
+                / (A
+                   * d
+                   * alpha)
+                )
+        except:
+                Cm = 0
     return Cm
 
 
@@ -148,21 +163,38 @@ def callCD_damping(
     velocidadeangular,
     velocidade,
 ):
-    try:
-        CDdamping = (
-            0.55
-            * (comprimento ** 4)
-            * raiomedio
-            * (velocidadeangular * fabs(velocidadeangular))
-        ) / (
-            arearef * (coifadiametro / 2) * (velocidade ** 2)
-            + (
-                (0.6 * 4 * aletaarea * (CPaleta - CG) ** 3 * velocidadeangular ** 2)
-                / (arearef * coifadiametro * velocidade)
-            )
-        )
-    except:
-        CDdamping = 0
+    if velocidadeangular >= 0:
+        try:
+            CDdamping = -(
+                0.55
+                * (comprimento ** 4)
+                * raiomedio
+                * (velocidadeangular**2)
+                ) / (
+                    arearef * (coifadiametro / 2) * (velocidade ** 2)
+                    + (
+                        (0.6 * 4 * aletaarea * (CPaleta - CG) ** 3 * velocidadeangular ** 2)
+                        / (arearef * coifadiametro * velocidade)
+                        )
+                    )
+        except:
+            CDdamping = 0
+    else:
+        try:
+            CDdamping = (
+                0.55
+                * (comprimento ** 4)
+                * raiomedio
+                * (velocidadeangular**2)
+                ) / (
+                    arearef * (coifadiametro / 2) * (velocidade ** 2)
+                    + (
+                        (0.6 * 4 * aletaarea * (CPaleta - CG) ** 3 * velocidadeangular ** 2)
+                        / (arearef * coifadiametro * velocidade)
+                        )
+                    )
+        except:
+            CDdamping = 0
     return CDdamping
 
 
@@ -307,4 +339,4 @@ def callRey(ardensidade, coifadiametro, viscosidadear, velocidademodulo):
 
 
 def callwind(altura):
-    return 30 * (4 / 1.225) ** 0.5 * (2.5) * log(1 / 2) * (altura) ** 0.25
+    return (4 / 1.225) ** 0.5 * (2.5) * log(1 / 2) * (altura) ** 0.25

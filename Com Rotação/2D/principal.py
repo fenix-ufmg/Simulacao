@@ -19,6 +19,8 @@ with open("desenho.txt", "r") as arquivo:
     for i in arquivo.readlines():
         armazenamento.append(i[:-1])
 
+arquivo.close()
+
 # método de identificar se os valores de corpo se referem ao primeiro ou segundo corpo do foguete
 corpo_diametro = 0
 corpo_comprimento = 0
@@ -366,19 +368,7 @@ CG = f.callCG(
     transicao_massa
 )
 
-# padronização que se manterá em todo o código: ângulos positivos no sentido horário
-if np.cross(vetor_de_referencia, atitude) >= 0:
-    angulo = [
-        -f.callalpha(
-            atitudex[t], atitudey[t], vetor_de_referencia[0], vetor_de_referencia[1]
-        )
-    ]
-else:
-    angulo = [
-        f.callalpha(
-            atitudex[t], atitudey[t], vetor_de_referencia[0], vetor_de_referencia[1]
-        )
-    ]
+angulo = [pi/2]
 
 if np.cross(velocidade, atitude) >= 0:
     alpha = [-f.callalpha(atitudex[t], atitudey[t], velocidade[0], velocidade[1])]
@@ -458,14 +448,16 @@ CP = (
 
 # coeficientes de momento e arrasto de amortecimento usados para cálculo da rotação
 Cm = [
-    f.callCm(
-        alpha[t],
-        coifa_diametro,
-        area_de_referencia,
-        coifa_diametro,
-        foguete_comprimento,
-        foguete_volume,
-    )
+      f.callCm(
+            alpha[t],
+            coifa_diametro,
+            area_de_referencia,
+            coifa_diametro,
+            foguete_comprimento,
+            foguete_volume,
+            velocidade_relativa,
+            atitude
+        )
 ]
 CD_damping = [
     f.callCD_damping(
@@ -476,7 +468,7 @@ CD_damping = [
         coifa_diametro,
         foguete_comprimento,
         corpo_diametro / 2,
-        velocidade_angular,
+        velocidade_angular[t],
         modulo_da_velocidade,
     )
 ]
@@ -523,7 +515,10 @@ while posicaoy[t] <= comprimento_da_haste:
     velocidade_relativa = [velocidade_relativax[t], velocidade_relativay[t]]
 
     # calculo das forças
-    modempuxo = f.call_mod(empuxox[t], empuxoy[t])
+    modempuxo = f.call_mod(empuxox[t-1], empuxoy[t-1])
+
+    empuxox.append(-modempuxo*atitudex[t])
+    empuxoy.append(modempuxo*atitudey[t])
 
     CD.append(
         f.callCDfriction(
@@ -552,13 +547,6 @@ while posicaoy[t] <= comprimento_da_haste:
         arrastox.append(0)
         arrastoy.append(0)
 
-    try:
-        empuxox.append((velocidadex[t] / modulo_da_velocidade) * modempuxo)
-        empuxoy.append((velocidadey[t] / modulo_da_velocidade) * modempuxo)
-    except:
-        empuxox.append(empuxox[t])
-        empuxoy.append(empuxoy[t])
-
     foguete_massa -= motor_massa / 8000
     peso.append(
         (
@@ -568,20 +556,6 @@ while posicaoy[t] <= comprimento_da_haste:
     )
 
     q = 1 / 2 * (Ar_densidade * modulo_da_velocidade ** 2)
-
-    # cálculo do ângulo de referência
-    if np.cross(vetor_de_referencia, atitude) >= 0:
-        angulo.append(
-            f.callalpha(
-                atitudex[t], atitudey[t], vetor_de_referencia[0], vetor_de_referencia[1]
-            )
-        )
-    else:
-        angulo.append(
-            -f.callalpha(
-                atitudex[t], atitudey[t], vetor_de_referencia[0], vetor_de_referencia[1]
-            )
-        )
 
         # cálculo do ângulo de ataque
     if np.cross(velocidade_relativa, atitude) >= 0:
@@ -604,7 +578,7 @@ while posicaoy[t] <= comprimento_da_haste:
     velocidade_angular.append(
         variacao_de_tempo * aceleracao_angular[t] + velocidade_angular[t]
     )
-    angulo[t] += variacao_de_tempo * velocidade_angular[t]
+    angulo.append(angulo[t] + variacao_de_tempo * velocidade_angular[t])
 
     Cm.append(
         f.callCm(
@@ -614,6 +588,8 @@ while posicaoy[t] <= comprimento_da_haste:
             coifa_diametro,
             foguete_comprimento,
             foguete_volume,
+            velocidade_relativa,
+            atitude
         )
     )
     CD_damping.append(
@@ -625,13 +601,15 @@ while posicaoy[t] <= comprimento_da_haste:
             coifa_diametro,
             foguete_comprimento,
             corpo_diametro / 2,
-            velocidade_angular,
+            velocidade_angular[t],
             modulo_da_velocidade,
         )
     )
 
-    atitudex.append(sin(angulo[t]))
-    atitudey.append(cos(angulo[t]))
+    atitude = [atitudex[t],atitudey[t]]
+
+    atitudex.append(cos(angulo[t]))
+    atitudey.append(sin(angulo[t]))
 
     # armazena duração total da etapa ao final do programa
     lancamentoduracao += variacao_de_tempo
@@ -707,10 +685,10 @@ while motor_duracao >= 0:
     velocidade_relativa = [velocidade_relativax[t], velocidade_relativay[t]]
 
     # calculo das forças
-    modempuxo = f.call_mod(empuxox[t], empuxoy[t])
+    modempuxo = f.call_mod(empuxox[t-1], empuxoy[t-1])
 
-    empuxox[t] = -modempuxo * sin(angulo[t])
-    empuxoy[t] = modempuxo * cos(angulo[t])
+    empuxox.append(modempuxo * atitudex[t])
+    empuxoy.append(modempuxo * atitudey[t])
 
     CD.append(
         f.callCDfriction(
@@ -738,13 +716,6 @@ while motor_duracao >= 0:
         arrastox.append(0)
         arrastoy.append(0)
 
-    try:
-        empuxox.append((velocidadex[t] / modulo_da_velocidade) * modempuxo)
-        empuxoy.append((velocidadey[t] / modulo_da_velocidade) * modempuxo)
-    except:
-        empuxox.append(0)
-        empuxoy.append(0)
-
     foguete_massa -= motor_massa / 8000
     peso.append(
         (
@@ -754,21 +725,6 @@ while motor_duracao >= 0:
     )
 
     q = 1 / 2 * (Ar_densidade * modulo_da_velocidade ** 2)
-
-    # cálculo do ângulo de referência
-    if np.cross(vetor_de_referencia, atitude) >= 0:
-        angulo.append(
-            f.callalpha(
-                atitudex[t], atitudey[t], vetor_de_referencia[0], vetor_de_referencia[1]
-            )
-        )
-
-    else:
-        angulo.append(
-            -f.callalpha(
-                atitudex[t], atitudey[t], vetor_de_referencia[0], vetor_de_referencia[1]
-            )
-        )
 
         # cálculo do ângulo de ataque
     if np.cross(velocidade_relativa, atitude) >= 0:
@@ -791,7 +747,8 @@ while motor_duracao >= 0:
     velocidade_angular.append(
         variacao_de_tempo * aceleracao_angular[t] + velocidade_angular[t]
     )
-    angulo[t] += variacao_de_tempo * velocidade_angular[t]
+    
+    angulo.append(angulo[t] + variacao_de_tempo * velocidade_angular[t])
 
     Cm.append(
         f.callCm(
@@ -801,6 +758,8 @@ while motor_duracao >= 0:
             coifa_diametro,
             foguete_comprimento,
             foguete_volume,
+            velocidade_relativa,
+            atitude
         )
     )
     CD_damping.append(
@@ -812,16 +771,15 @@ while motor_duracao >= 0:
             coifa_diametro,
             foguete_comprimento,
             corpo_diametro / 2,
-            velocidade_angular,
+            velocidade_angular[t],
             modulo_da_velocidade,
         )
     )
 
-    if np.cross(vetor_de_referencia, atitude) >= 0:
-        atitudex.append(-sin(angulo[t]))
-    else:
-        atitudex.append(sin(angulo[t]))
-    atitudey.append(cos(angulo[t]))
+    atitude = [atitudex[t],atitudey[t]]
+    
+    atitudex.append(cos(angulo[t]))
+    atitudey.append(sin(angulo[t]))
 
     # armazena duração total da etapa ao final do programa
     voo_impulsionadoduracao += variacao_de_tempo
@@ -933,21 +891,6 @@ while velocidadey[t] >= 0:
 
     q = 1 / 2 * (Ar_densidade * modulo_da_velocidade ** 2)
 
-    # cálculo do ângulo de referência
-    if np.cross(vetor_de_referencia, atitude) >= 0:
-        angulo.append(
-            f.callalpha(
-                atitudex[t], atitudey[t], vetor_de_referencia[0], vetor_de_referencia[1]
-            )
-        )
-
-    else:
-        angulo.append(
-            -f.callalpha(
-                atitudex[t], atitudey[t], vetor_de_referencia[0], vetor_de_referencia[1]
-            )
-        )
-
         # cálculo do ângulo de ataque
     if np.cross(velocidade_relativa, atitude) >= 0:
         alpha.append(
@@ -969,7 +912,8 @@ while velocidadey[t] >= 0:
     velocidade_angular.append(
         variacao_de_tempo * aceleracao_angular[t] + velocidade_angular[t]
     )
-    angulo[t + 1] += variacao_de_tempo * velocidade_angular[t]
+    
+    angulo.append(angulo[t] + variacao_de_tempo * velocidade_angular[t])
 
     Cm.append(
         f.callCm(
@@ -979,6 +923,8 @@ while velocidadey[t] >= 0:
             coifa_diametro,
             foguete_comprimento,
             foguete_volume,
+            velocidade_relativa,
+            atitude
         )
     )
     CD_damping.append(
@@ -995,11 +941,10 @@ while velocidadey[t] >= 0:
         )
     )
 
-    if np.cross(vetor_de_referencia, atitude) >= 0:
-        atitudex.append(-sin(angulo[t]))
-    else:
-        atitudex.append(sin(angulo[t]))
-    atitudey.append(cos(angulo[t]))
+    atitude = [atitudex[t],atitudey[t]]
+    
+    atitudex.append(cos(angulo[t]))
+    atitudey.append(sin(angulo[t]))
 
     # armazena duração total da etapa ao final do programa
     cabotagemduracao += variacao_de_tempo
@@ -1105,20 +1050,6 @@ while posicaoy[t] >= 0:
 
     q = 1 / 2 * (Ar_densidade * modulo_da_velocidade ** 2)
 
-    # cálculo do ângulo de referência
-    if np.cross(vetor_de_referencia, atitude) >= 0:
-        angulo.append(
-            f.callalpha(
-                atitudex[t], atitudey[t], vetor_de_referencia[0], vetor_de_referencia[1]
-            )
-        )
-
-    else:
-        angulo.append(
-            -f.callalpha(
-                atitudex[t], atitudey[t], vetor_de_referencia[0], vetor_de_referencia[1]
-            )
-        )
 
         # cálculo do ângulo de ataque
     if np.cross(velocidade_relativa, atitude) >= 0:
@@ -1134,14 +1065,15 @@ while posicaoy[t] >= 0:
             )
         )
 
-        # cálculo do movimento de rotação
+    # cálculo do movimento de rotação
     momento.append((Cm[t] + CD_damping[t]) * q * coifa_diametro)
 
     aceleracao_angular.append(momento[t] / momento_de_inercia)
     velocidade_angular.append(
         variacao_de_tempo * aceleracao_angular[t] + velocidade_angular[t]
     )
-    angulo[t + 1] += variacao_de_tempo * velocidade_angular[t]
+    
+    angulo.append(angulo[t] + variacao_de_tempo * velocidade_angular[t])
 
     Cm.append(
         f.callCm(
@@ -1151,6 +1083,8 @@ while posicaoy[t] >= 0:
             coifa_diametro,
             foguete_comprimento,
             foguete_volume,
+            velocidade_relativa,
+            atitude
         )
     )
     CD_damping.append(
@@ -1162,16 +1096,15 @@ while posicaoy[t] >= 0:
             coifa_diametro,
             foguete_comprimento,
             corpo_diametro / 2,
-            velocidade_angular,
+            velocidade_angular[t],
             modulo_da_velocidade,
         )
     )
 
-    if np.cross(vetor_de_referencia, atitude) >= 0:
-        atitudex.append(-sin(angulo[t]))
-    else:
-        atitudex.append(sin(angulo[t]))
-    atitudey.append(cos(angulo[t]))
+    atitudex.append(cos(angulo[t]))
+    atitudey.append(sin(angulo[t]))
+
+    atitude = [atitudex[t],atitudey[t]]
 
     # armazena duração total da etapa ao final do programa
     queda_livre_duracao += variacao_de_tempo
@@ -1439,6 +1372,7 @@ plt.title("Atitude x tempo")
 
 plt.grid()
 
+plt.legend()
 
 plt.figure()
 
@@ -1450,18 +1384,6 @@ plt.ylabel("Relative Velocity (m/s)")
 plt.title("Relative Velocity x tempo")
 
 plt.grid()
-
-
-plt.figure()
-
-plt.plot(posicaox, posicaoy, label="Horizontal Relative Velocity")
-
-plt.xlabel("tempo (s)")
-plt.ylabel("Relative Velocity (m/s)")
-plt.title("Relative Velocity x tempo")
-
-plt.grid()
-
 
 plt.legend()
 
