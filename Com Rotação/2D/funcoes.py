@@ -3,6 +3,9 @@
 
 from math import pi, acos, sin, log, fabs, sqrt
 import numpy as np
+import requests
+import arrow  # biblioteca que lida com tempo de uma forma mais amigavel do que os modulos built-in
+import json
 
 # calcula módulo entre dois vetores
 def call_mod(vetorx, vetory):
@@ -339,4 +342,62 @@ def callRey(ardensidade, coifadiametro, viscosidadear, velocidademodulo):
 
 
 def callwind(altura):
-    return (4 / 1.225) ** 0.5 * (2.5) * log(1 / 2) * (altura) ** 0.25
+    # ((4 / 1.225) ** 0.5 * (2.5) * log(1 / 2) * (altura) ** 0.25) 
+
+    wind_speed_altura = 'windSpeed'
+    wind_direction_altura = 'windDirection'
+        
+    if altura >= 20 and altura < 30:
+        wind_speed_altura += '20m'
+        wind_direction_altura += '20m'
+
+    elif altura >= 30 and altura < 40:
+        wind_speed_altura += '30m'
+        wind_direction_altura += '30m'
+
+    elif altura >= 40 and altura < 50:
+        wind_speed_altura += '40m'
+        wind_direction_altura += '40m'
+
+    elif altura >= 50 and altura < 80:
+        wind_speed_altura += '50m'
+        wind_direction_altura += '50m'
+
+    elif altura >= 80 and altura < 100:
+        wind_speed_altura += '80m'
+        wind_direction_altura += '80m'
+
+    elif altura >= 100:
+        wind_speed_altura += '100m'
+        wind_direction_altura += '100m'
+        
+        
+    response = requests.get( 'https://api.stormglass.io/v2/weather/point', \
+        params={
+            'lat': -19.870591,
+            'lng': -43.967650,
+            'params': ','.join([str(wind_speed_altura),str(wind_direction_altura)]),
+            'start' : arrow.now().to('UTC').timestamp,
+            'end': arrow.now().to('UTC').timestamp,
+        },
+        headers={
+            'Authorization': '2d093a36-79b2-11ea-a222-0242ac130002-2d093aea-79b2-11ea-a222-0242ac130002'
+        }
+    )
+
+    json_data = response.json()
+    print(json_data)
+    
+    velocidade = json_data['hours'][0][str(wind_speed_altura)]['sg']
+    direcao = json_data['hours'][0][str(wind_direction_altura)]['sg']
+
+    if altura > 100:
+        multiplicador = altura//100
+        velocidade = velocidade * (1.1 ** multiplicador)
+
+    if direcao > 180:
+        velocidade = velocidade
+    else:
+        velocidade = -velocidade    
+
+    return velocidade
